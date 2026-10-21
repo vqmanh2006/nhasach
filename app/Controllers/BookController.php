@@ -43,13 +43,21 @@ final class BookController extends Controller
     {
         $this->requireLogin();
         $search = trim((string) ($_GET['search'] ?? ''));
-        $this->view('books/index', ['books' => $this->books->all($search), 'search' => $search]);
+        $this->view('books/index', [
+            'books' => $this->books->all($search),
+            'search' => $search,
+            'csrfToken' => $this->csrfToken(),
+        ]);
     }
 
     public function create(): void
     {
         $this->requireLogin();
-        $this->view('books/create', ['categories' => $this->books->categories(), 'book' => []]);
+        $this->view('books/create', [
+            'categories' => $this->books->categories(),
+            'book' => [],
+            'csrfToken' => $this->csrfToken(),
+        ]);
     }
 
     public function store(): void
@@ -62,7 +70,7 @@ final class BookController extends Controller
             $this->redirect('/books');
         } catch (Throwable $exception) {
             $error = $exception instanceof InvalidArgumentException ? $exception->getMessage() : 'Không thể thêm sách. ISBN có thể đã tồn tại.';
-            $this->view('books/create', ['categories' => $this->books->categories(), 'book' => $_POST, 'error' => $error]);
+            $this->view('books/create', ['categories' => $this->books->categories(), 'book' => $_POST, 'error' => $error, 'csrfToken' => $this->csrfToken()]);
         }
     }
 
@@ -73,7 +81,7 @@ final class BookController extends Controller
         if (!$book) {
             $this->redirect('/books');
         }
-        $this->view('books/edit', ['categories' => $this->books->categories(), 'book' => $book]);
+        $this->view('books/edit', ['categories' => $this->books->categories(), 'book' => $book, 'csrfToken' => $this->csrfToken()]);
     }
 
     public function update(): void
@@ -88,7 +96,7 @@ final class BookController extends Controller
         } catch (Throwable $exception) {
             $book = array_merge($_POST, ['id' => $id]);
             $error = $exception instanceof InvalidArgumentException ? $exception->getMessage() : 'Không thể cập nhật sách. ISBN có thể đã tồn tại.';
-            $this->view('books/edit', ['categories' => $this->books->categories(), 'book' => $book, 'error' => $error]);
+            $this->view('books/edit', ['categories' => $this->books->categories(), 'book' => $book, 'error' => $error, 'csrfToken' => $this->csrfToken()]);
         }
     }
 
