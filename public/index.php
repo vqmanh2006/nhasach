@@ -11,6 +11,8 @@ require_once BASE_PATH . '/core/Controller.php';
 require_once BASE_PATH . '/core/Router.php';
 require_once BASE_PATH . '/app/Models/Book.php';
 require_once BASE_PATH . '/app/Controllers/BookController.php';
+require_once BASE_PATH . '/app/Models/Category.php';
+require_once BASE_PATH . '/app/Controllers/CategoryController.php';
 
 $router = new Router();
 
@@ -65,5 +67,12 @@ $router->post('/books', [BookController::class, 'store']);
 $router->get('/books/edit', [BookController::class, 'edit']);
 $router->post('/books/update', [BookController::class, 'update']);
 $router->post('/books/delete', [BookController::class, 'delete']);
+
+$router->get('/categories', [CategoryController::class, 'index']);
+$router->get('/categories/create', [CategoryController::class, 'create']);
+$router->post('/categories', [CategoryController::class, 'store']);
+$router->get('/categories/edit', [CategoryController::class, 'edit']);
+$router->post('/categories/update', [CategoryController::class, 'update']);
+$router->post('/categories/delete', [CategoryController::class, 'delete']);
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
