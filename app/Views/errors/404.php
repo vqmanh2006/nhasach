@@ -1,0 +1,1 @@
+<?php http_response_code(404); $title = 'Không tìm thấy trang'; require BASE_PATH . '/app/Views/layouts/header.php'; ?><main class="main-content"><section class="content-card empty-state"><h1>404</h1><p>Trang bạn yêu cầu không tồn tại.</p><a class="btn btn-primary" href="/">Về trang chủ</a></section></main><?php require BASE_PATH . '/app/Views/layouts/footer.php'; ?>

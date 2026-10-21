@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded', () => { document.querySelectorAll('.alert').forEach((alert) => { window.setTimeout(() => { alert.style.opacity = '0'; window.setTimeout(() => alert.remove(), 300); }, 4500); }); });
