@@ -1,27 +1,101 @@
-# Nhà sách Pro
+# Nhà sách trí tuệ
 
-Ứng dụng quản lý nhà sách bằng PHP MVC, PDO, MySQL/MariaDB và JavaScript thuần.
+Ứng dụng quản lý nhà sách xây dựng bằng PHP MVC, PDO, MySQL/MariaDB và
+JavaScript thuần. Hệ thống hỗ trợ quản lý sách, danh mục, khách hàng và
+đơn hàng bán sách trong một giao diện quản trị bằng tiếng Việt.
+
+## Tính năng
+
+- Đăng nhập và đăng xuất tài khoản quản trị.
+- Dashboard hiển thị tổng số sách, danh mục, khách hàng và đơn hàng.
+- Quản lý sách: thêm, sửa, xóa, tìm kiếm, cập nhật giá và tồn kho.
+- Quản lý danh mục sách.
+- Quản lý thông tin khách hàng.
+- Tạo và hủy đơn hàng; tồn kho được cập nhật theo giao dịch.
+- Bảo vệ biểu mẫu bằng CSRF token và sử dụng prepared statements với PDO.
+
+## Yêu cầu
+
+- PHP 8.0 trở lên với extension `PDO` và `pdo_mysql`.
+- MySQL 5.7+/8.0 hoặc MariaDB tương thích.
+- Apache với `mod_rewrite` được bật, hoặc máy chủ PHP có thể chuyển mọi
+  request về `public/index.php`.
 
 ## Cài đặt
 
-1. Trỏ Apache DocumentRoot vào thư mục `public/` hoặc bật module rewrite.
-2. Import `database/nhasach.sql` vào MySQL/MariaDB.
-3. Kiểm tra `config/database.php` hoặc đặt `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
-4. Mở `/login`.
+1. Clone dự án và trỏ DocumentRoot của Apache vào thư mục `public/`.
+2. Tạo cơ sở dữ liệu bằng file `database/nhasach.sql`:
 
-Tài khoản demo: `admin@nhasach.local` / `password`.
+   ```bash
+   mysql -u root -p < database/nhasach.sql
+   ```
 
-## Route hiện có
+3. Cấu hình kết nối trong `config/database.php`, hoặc đặt các biến môi
+   trường `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` và `DB_PASSWORD`.
+4. Đảm bảo web server có quyền đọc toàn bộ mã nguồn và truy cập thư mục
+   `public/`.
+5. Mở `/login` trên trình duyệt.
 
-- `GET /`: dashboard thống kê cơ bản.
-- `GET /login`: form đăng nhập.
-- `POST /login`: xử lý đăng nhập.
-- `GET /logout`: đăng xuất.
+Không cần cài package bên ngoài; frontend sử dụng CSS và JavaScript có sẵn
+trong thư mục `public/`.
 
-## Cấu trúc
+## Tài khoản demo
 
-- `public/index.php`: front controller.
-- `core/`: Router, PDO Database, Model và Controller.
-- `config/`: cấu hình.
-- `app/Views/`: giao diện.
-- `database/nhasach.sql`: schema và dữ liệu mẫu.
+Tài khoản được tạo khi import cơ sở dữ liệu:
+
+```text
+Email: admin@nhasach.local
+Mật khẩu: password
+```
+
+Hãy đổi hoặc xóa tài khoản mẫu trước khi đưa hệ thống lên môi trường thật.
+
+## Các route chính
+
+| Method | Route | Mô tả |
+| --- | --- | --- |
+| GET | `/` | Dashboard thống kê |
+| GET/POST | `/login` | Hiển thị và xử lý đăng nhập |
+| GET | `/logout` | Đăng xuất |
+| GET | `/books` | Danh sách và tìm kiếm sách |
+| GET/POST | `/books/create`, `/books` | Thêm sách |
+| GET/POST | `/books/edit`, `/books/update` | Sửa sách |
+| POST | `/books/delete` | Xóa sách |
+| GET | `/categories` | Danh sách danh mục |
+| GET/POST | `/categories/create`, `/categories` | Thêm danh mục |
+| GET/POST | `/categories/edit`, `/categories/update` | Sửa danh mục |
+| POST | `/categories/delete` | Xóa danh mục |
+| GET | `/customers` | Danh sách khách hàng |
+| GET/POST | `/customers/create`, `/customers` | Thêm khách hàng |
+| GET/POST | `/customers/edit`, `/customers/update` | Sửa khách hàng |
+| POST | `/customers/delete` | Xóa khách hàng |
+| GET | `/sales` | Danh sách đơn hàng |
+| GET/POST | `/sales/create`, `/sales` | Tạo đơn hàng |
+| POST | `/sales/delete` | Hủy đơn hàng |
+
+## Cấu trúc thư mục
+
+```text
+app/
+├── Controllers/   # Xử lý request và nghiệp vụ
+├── Models/        # Truy vấn dữ liệu
+└── Views/         # Giao diện PHP
+config/            # Hằng số ứng dụng và cấu hình database
+core/              # Router, Database, Model, Controller dùng chung
+database/          # Schema và dữ liệu mẫu
+public/            # DocumentRoot, CSS, JavaScript và front controller
+```
+
+## Luồng xử lý
+
+`public/index.php` khởi tạo session, nạp các thành phần cốt lõi, đăng ký
+route và chuyển request đến controller tương ứng. Controller gọi model để
+đọc hoặc ghi dữ liệu, sau đó render view trong `app/Views/`. Giao diện dùng
+layout chung tại `app/Views/layouts/`.
+
+## Cấu hình tên hiển thị
+
+Tên thương hiệu hiện tại là **Nhà sách trí tuệ**. Có thể thay đổi tên dùng
+trên tiêu đề trang và footer tại hằng `APP_NAME` trong
+`config/constants.php`; thương hiệu trên thanh điều hướng nằm trong
+`app/Views/layouts/header.php`.
