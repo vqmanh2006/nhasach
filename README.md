@@ -7,6 +7,7 @@ JavaScript thuần. Hệ thống hỗ trợ quản lý sách, danh mục, khách
 ## Tính năng
 
 - Đăng nhập và đăng xuất tài khoản quản trị.
+- Giao diện riêng cho khách hàng sau khi đăng nhập.
 - Dashboard hiển thị tổng số sách, danh mục, khách hàng và đơn hàng.
 - Quản lý sách: thêm, sửa, xóa, tìm kiếm, cập nhật giá và tồn kho.
 - Quản lý danh mục sách.
@@ -57,6 +58,8 @@ Hãy đổi hoặc xóa tài khoản mẫu trước khi đưa hệ thống lên 
 | GET | `/` | Dashboard thống kê |
 | GET/POST | `/login` | Hiển thị và xử lý đăng nhập |
 | GET/POST | `/register` | Tạo tài khoản khách hàng |
+| GET | `/customer` | Trang mua sắm dành cho khách hàng |
+| GET/POST | `/profile` | Xem và cập nhật hồ sơ tài khoản |
 | GET | `/logout` | Đăng xuất |
 | GET | `/books` | Danh sách và tìm kiếm sách |
 | GET/POST | `/books/create`, `/books` | Thêm sách |

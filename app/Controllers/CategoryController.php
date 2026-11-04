@@ -10,13 +10,6 @@ final class CategoryController extends Controller
         $this->categories = new Category();
     }
 
-    private function requireLogin(): void
-    {
-        if (empty($_SESSION['user'])) {
-            $this->redirect('/login');
-        }
-    }
-
     private function input(): array
     {
         $name = trim((string) ($_POST['name'] ?? ''));
@@ -32,7 +25,7 @@ final class CategoryController extends Controller
 
     public function index(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $search = trim((string) ($_GET['search'] ?? ''));
         $this->view('categories/index', [
             'categories' => $this->categories->all($search),
@@ -43,7 +36,7 @@ final class CategoryController extends Controller
 
     public function create(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->view('categories/create', [
             'category' => [],
             'csrfToken' => $this->csrfToken(),
@@ -52,7 +45,7 @@ final class CategoryController extends Controller
 
     public function store(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
             $data = $this->input();
@@ -73,7 +66,7 @@ final class CategoryController extends Controller
 
     public function edit(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $category = $this->categories->find((int) ($_GET['id'] ?? 0));
         if (!$category) {
             $this->redirect('/categories');
@@ -86,7 +79,7 @@ final class CategoryController extends Controller
 
     public function update(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         $id = (int) ($_POST['id'] ?? 0);
         try {
@@ -108,7 +101,7 @@ final class CategoryController extends Controller
 
     public function delete(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
             $this->categories->delete((int) ($_POST['id'] ?? 0));

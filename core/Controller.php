@@ -15,6 +15,22 @@ abstract class Controller
         exit;
     }
 
+    protected function requireLogin(): void
+    {
+        if (empty($_SESSION['user'])) {
+            $this->redirect('/login');
+        }
+    }
+
+    protected function requireRole(string ...$roles): void
+    {
+        $this->requireLogin();
+        if (!in_array((string) ($_SESSION['user']['role'] ?? ''), $roles, true)) {
+            http_response_code(403);
+            exit('Bạn không có quyền truy cập trang này.');
+        }
+    }
+
     protected function csrfToken(): string
     {
         if (empty($_SESSION['_csrf'])) {

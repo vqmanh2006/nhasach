@@ -10,13 +10,6 @@ final class SaleController extends Controller
         $this->sales = new Sale();
     }
 
-    private function requireLogin(): void
-    {
-        if (empty($_SESSION['user'])) {
-            $this->redirect('/login');
-        }
-    }
-
     private function input(): array
     {
         $customerId = (int) ($_POST['customer_id'] ?? 0);
@@ -75,7 +68,7 @@ final class SaleController extends Controller
 
     public function index(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $search = trim((string) ($_GET['search'] ?? ''));
         $this->view('sales/index', [
             'sales' => $this->sales->all($search),
@@ -86,7 +79,7 @@ final class SaleController extends Controller
 
     public function create(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->view('sales/create', [
             'customers' => $this->sales->customers(),
             'books' => $this->sales->books(),
@@ -96,7 +89,7 @@ final class SaleController extends Controller
 
     public function store(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
             $data = $this->input();
@@ -116,7 +109,7 @@ final class SaleController extends Controller
 
     public function delete(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
             $this->sales->delete((int) ($_POST['id'] ?? 0));

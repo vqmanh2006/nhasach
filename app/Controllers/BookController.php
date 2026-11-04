@@ -10,13 +10,6 @@ final class BookController extends Controller
         $this->books = new Book();
     }
 
-    private function requireLogin(): void
-    {
-        if (empty($_SESSION['user'])) {
-            $this->redirect('/login');
-        }
-    }
-
     private function input(): array
     {
         $title = trim((string) ($_POST['title'] ?? ''));
@@ -41,7 +34,7 @@ final class BookController extends Controller
 
     public function index(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $search = trim((string) ($_GET['search'] ?? ''));
         $this->view('books/index', [
             'books' => $this->books->all($search),
@@ -52,7 +45,7 @@ final class BookController extends Controller
 
     public function create(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->view('books/create', [
             'categories' => $this->books->categories(),
             'book' => [],
@@ -62,7 +55,7 @@ final class BookController extends Controller
 
     public function store(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
             $this->books->create($this->input());
@@ -76,7 +69,7 @@ final class BookController extends Controller
 
     public function edit(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $book = $this->books->find((int) ($_GET['id'] ?? 0));
         if (!$book) {
             $this->redirect('/books');
@@ -86,7 +79,7 @@ final class BookController extends Controller
 
     public function update(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         $id = (int) ($_POST['id'] ?? 0);
         try {
@@ -102,7 +95,7 @@ final class BookController extends Controller
 
     public function delete(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
             $this->books->delete((int) ($_POST['id'] ?? 0));

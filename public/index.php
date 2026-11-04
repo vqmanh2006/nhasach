@@ -22,6 +22,10 @@ require_once BASE_PATH . '/app/Controllers/SaleController.php';
 $router = new Router();
 
 $router->get('/', static function (): void {
+    if (($_SESSION['user']['role'] ?? '') === 'customer') {
+        header('Location: /customer');
+        exit;
+    }
     $stats = ['books' => 0, 'categories' => 0, 'customers' => 0, 'sales' => 0];
     try {
         $db = Database::connection();
@@ -40,6 +44,20 @@ $router->post('/login', [AuthController::class, 'login']);
 $router->get('/register', [AuthController::class, 'register']);
 $router->post('/register', [AuthController::class, 'register']);
 $router->get('/logout', [AuthController::class, 'logout']);
+$router->get('/profile', [AuthController::class, 'profile']);
+$router->post('/profile', [AuthController::class, 'updateProfile']);
+$router->get('/customer', static function (): void {
+    if (empty($_SESSION['user'])) {
+        header('Location: /login');
+        exit;
+    }
+    if (($_SESSION['user']['role'] ?? '') !== 'customer') {
+        header('Location: /');
+        exit;
+    }
+    $books = (new Book())->all(trim((string) ($_GET['search'] ?? '')));
+    require BASE_PATH . '/app/Views/customer/dashboard.php';
+});
 
 $router->get('/books', [BookController::class, 'index']);
 $router->get('/books/create', [BookController::class, 'create']);

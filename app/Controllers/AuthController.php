@@ -33,7 +33,7 @@ final class AuthController extends Controller
                     'phone' => $user['phone'] ?? null,
                     'address' => $user['address'] ?? null,
                 ];
-                $this->redirect('/');
+                $this->redirect($user['role'] === 'customer' ? '/customer' : '/');
             }
         } catch (Throwable $exception) {
             $error = 'Không thể đăng nhập lúc này. Vui lòng kiểm tra cơ sở dữ liệu.';
@@ -99,7 +99,7 @@ final class AuthController extends Controller
                 'phone' => $phone !== '' ? $phone : null,
                 'address' => $address !== '' ? $address : null,
             ];
-            $this->redirect('/');
+            $this->redirect('/customer');
         }
 
         require BASE_PATH . '/app/Views/auth/register.php';

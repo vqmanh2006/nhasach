@@ -10,13 +10,6 @@ final class CustomerController extends Controller
         $this->customers = new Customer();
     }
 
-    private function requireLogin(): void
-    {
-        if (empty($_SESSION['user'])) {
-            $this->redirect('/login');
-        }
-    }
-
     private function input(): array
     {
         $name = trim((string) ($_POST['name'] ?? ''));
@@ -40,7 +33,7 @@ final class CustomerController extends Controller
 
     public function index(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $search = trim((string) ($_GET['search'] ?? ''));
         $this->view('customers/index', [
             'customers' => $this->customers->all($search),
@@ -51,7 +44,7 @@ final class CustomerController extends Controller
 
     public function create(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->view('customers/create', [
             'customer' => [],
             'csrfToken' => $this->csrfToken(),
@@ -60,7 +53,7 @@ final class CustomerController extends Controller
 
     public function store(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
             $data = $this->input();
@@ -79,7 +72,7 @@ final class CustomerController extends Controller
 
     public function edit(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $customer = $this->customers->find((int) ($_GET['id'] ?? 0));
         if (!$customer) {
             $this->redirect('/customers');
@@ -92,7 +85,7 @@ final class CustomerController extends Controller
 
     public function update(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         $id = (int) ($_POST['id'] ?? 0);
         try {
@@ -111,7 +104,7 @@ final class CustomerController extends Controller
 
     public function delete(): void
     {
-        $this->requireLogin();
+        $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
             $this->customers->delete((int) ($_POST['id'] ?? 0));
