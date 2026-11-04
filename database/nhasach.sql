@@ -6,7 +6,9 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(190) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('admin','staff') NOT NULL DEFAULT 'staff',
+    role ENUM('admin','staff','customer') NOT NULL DEFAULT 'customer',
+    phone VARCHAR(30) NULL,
+    address VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 

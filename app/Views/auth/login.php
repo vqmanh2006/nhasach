@@ -13,7 +13,7 @@ $title = 'Đăng nhập';
 <main class="auth-card">
     <div class="brand-mark">NS</div>
     <h1>Đăng nhập hệ thống</h1>
-    <p class="muted">Quản lý nhà sách trên nền web</p>
+    <p class="muted">Đăng nhập vào Nhà sách trí tuệ</p>
     <?php if (!empty($error)): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
     <?php endif; ?>
@@ -23,6 +23,7 @@ $title = 'Đăng nhập';
         <button class="btn btn-primary" type="submit">Đăng nhập</button>
     </form>
     <p class="demo-note">Demo: admin@nhasach.local / password</p>
+    <p class="demo-note">Chưa có tài khoản? <a href="/register">Đăng ký tài khoản khách hàng</a></p>
 </main>
 </body>
 </html>

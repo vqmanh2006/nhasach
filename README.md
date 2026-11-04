@@ -56,6 +56,7 @@ Hãy đổi hoặc xóa tài khoản mẫu trước khi đưa hệ thống lên 
 | --- | --- | --- |
 | GET | `/` | Dashboard thống kê |
 | GET/POST | `/login` | Hiển thị và xử lý đăng nhập |
+| GET/POST | `/register` | Tạo tài khoản khách hàng |
 | GET | `/logout` | Đăng xuất |
 | GET | `/books` | Danh sách và tìm kiếm sách |
 | GET/POST | `/books/create`, `/books` | Thêm sách |
@@ -99,3 +100,14 @@ Tên thương hiệu hiện tại là **Nhà sách trí tuệ**. Có thể thay 
 trên tiêu đề trang và footer tại hằng `APP_NAME` trong
 `config/constants.php`; thương hiệu trên thanh điều hướng nằm trong
 `app/Views/layouts/header.php`.
+
+## Đăng ký tài khoản khách hàng
+
+Mở `http://localhost:8080/register` để tạo tài khoản khách hàng, hoặc chọn
+liên kết đăng ký trên trang `/login`. Tài khoản mới được lưu với role
+`customer` và được đăng nhập tự động sau khi đăng ký thành công.
+
+Nếu database đã được tạo từ phiên bản cũ, chạy thêm file
+`database/migrations/001_add_customer_accounts.sql` trong phpMyAdmin trước
+khi đăng ký tài khoản đầu tiên. Nếu import lại toàn bộ database từ đầu, file
+`database/nhasach.sql` đã bao gồm các cột và role cần thiết.
