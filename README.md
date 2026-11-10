@@ -114,3 +114,7 @@ Nếu database đã được tạo từ phiên bản cũ, chạy thêm file
 `database/migrations/001_add_customer_accounts.sql` trong phpMyAdmin trước
 khi đăng ký tài khoản đầu tiên. Nếu import lại toàn bộ database từ đầu, file
 `database/nhasach.sql` đã bao gồm các cột và role cần thiết.
+
+Nếu tài khoản demo báo sai mật khẩu dù đã nhập `password`, chạy file
+`database/migrations/002_reset_demo_admin_password.sql` trong phpMyAdmin,
+sau đó đăng nhập lại bằng `admin@nhasach.local` / `password`.

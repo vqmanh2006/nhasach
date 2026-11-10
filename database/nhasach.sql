@@ -74,7 +74,7 @@ CREATE TABLE sale_items (
 ) ENGINE=InnoDB;
 
 INSERT INTO users (name, email, password, role) VALUES
-('Quản trị viên', 'admin@nhasach.local', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC8b9wT6jJ5wY3N5yQeK', 'admin');
+('Quản trị viên', 'admin@nhasach.local', '$2y$12$1/H.TCiqeLp4Nflx0AcrCOi6lJ8mKaGK1RQY0cqus20PPPtQ8O4OC', 'admin');
 
 INSERT INTO categories (name, description) VALUES
 ('Văn học', 'Tiểu thuyết, truyện ngắn và tác phẩm văn học.'),
