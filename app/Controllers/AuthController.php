@@ -115,7 +115,7 @@ final class AuthController extends Controller
     public function profile(): void
     {
         $this->requireLogin();
-        $user = $this->users->findById((int) ($_SESSION['user']['id'] ?? 0));
+        $user = $this->users->findById((int) ($_SESSION['user']['id'] ?? 0), (string) ($_SESSION['user']['role'] ?? ''));
         $this->view('profile/index', ['user' => $user, 'csrfToken' => $this->csrfToken()]);
     }
 
@@ -145,7 +145,7 @@ final class AuthController extends Controller
             $data['password'] = $password;
         }
 
-        $this->users->updateProfile($id, $data);
+        $this->users->updateProfile($id, $data, (string) ($_SESSION['user']['role'] ?? 'customer'));
         $_SESSION['user']['name'] = $name;
         $_SESSION['user']['phone'] = $data['phone'];
         $_SESSION['user']['address'] = $data['address'];

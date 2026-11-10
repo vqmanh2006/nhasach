@@ -60,7 +60,7 @@ final class SaleController extends Controller
         return [
             'customer_id' => $customerId,
             'user_id' => (int) ($_SESSION['user']['id'] ?? 0),
-            'status' => $_POST['status'] ?? 'completed',
+            'status' => $_POST['status'] ?? 'hoan_thanh',
             'total_amount' => $total,
             'items' => $items,
         ];
