@@ -56,6 +56,7 @@ CREATE TABLE sales (
     user_id INT UNSIGNED NULL,
     total_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
     status ENUM('completed','cancelled') NOT NULL DEFAULT 'completed',
+    delivery_address VARCHAR(500) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_sales_created_at (created_at),
     CONSTRAINT fk_sales_customer FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL ON UPDATE CASCADE,

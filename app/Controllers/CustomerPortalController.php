@@ -14,7 +14,7 @@ final class CustomerPortalController extends Controller
 
     private function requireCustomer(): void
     {
-        $this->requireRole('customer');
+        $this->requireLogin();
     }
 
     private function cart(): array
@@ -100,8 +100,13 @@ final class CustomerPortalController extends Controller
     {
         $this->requireCustomer();
         $this->verifyCsrf();
+        $deliveryAddress = trim((string) ($_POST['delivery_address'] ?? ''));
+        if ($deliveryAddress === '') {
+            $_SESSION['flash_error'] = 'Vui lòng nhập địa chỉ giao hàng cụ thể.';
+            $this->redirect('/customer/cart');
+        }
         try {
-            $this->sales->createCustomerOrder((int) $_SESSION['user']['id'], $_SESSION['user'], $this->cart());
+            $this->sales->createCustomerOrder((int) $_SESSION['user']['id'], $_SESSION['user'], $this->cart(), $deliveryAddress);
             $_SESSION['cart'] = [];
             $_SESSION['flash'] = 'Đặt hàng thành công. Cảm ơn bạn đã mua sách.';
         } catch (Throwable $exception) {

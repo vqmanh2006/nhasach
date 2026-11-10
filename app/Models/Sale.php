@@ -66,7 +66,7 @@ final class Sale extends Model
         return $statement->fetchAll();
     }
 
-    public function createCustomerOrder(int $userId, array $user, array $cart): int
+    public function createCustomerOrder(int $userId, array $user, array $cart, string $deliveryAddress): int
     {
         $customer = $this->db->prepare('SELECT id FROM customers WHERE email = ? LIMIT 1');
         $customer->execute([(string) $user['email']]);
@@ -75,8 +75,11 @@ final class Sale extends Model
             $insertCustomer = $this->db->prepare(
                 'INSERT INTO customers (name, phone, email, address) VALUES (?, ?, ?, ?)'
             );
-            $insertCustomer->execute([$user['name'], $user['phone'] ?? null, $user['email'], $user['address'] ?? null]);
+            $insertCustomer->execute([$user['name'], $user['phone'] ?? null, $user['email'], $deliveryAddress]);
             $customerId = (int) $this->db->lastInsertId();
+        } else {
+            $updateCustomer = $this->db->prepare('UPDATE customers SET address = ? WHERE id = ?');
+            $updateCustomer->execute([$deliveryAddress, $customerId]);
         }
 
         $bookIds = array_map('intval', array_keys($cart));
@@ -108,6 +111,7 @@ final class Sale extends Model
             'user_id' => $userId,
             'total_amount' => $total,
             'status' => 'completed',
+            'delivery_address' => $deliveryAddress,
             'items' => $items,
         ]);
     }
@@ -117,14 +121,15 @@ final class Sale extends Model
         $this->db->beginTransaction();
         try {
             $sale = $this->db->prepare(
-                'INSERT INTO sales (customer_id, user_id, total_amount, status)
-                 VALUES (:customer_id, :user_id, :total_amount, :status)'
+                'INSERT INTO sales (customer_id, user_id, total_amount, status, delivery_address)
+                 VALUES (:customer_id, :user_id, :total_amount, :status, :delivery_address)'
             );
             $sale->execute([
                 'customer_id' => $data['customer_id'],
                 'user_id' => $data['user_id'],
                 'total_amount' => $data['total_amount'],
                 'status' => $data['status'],
+                'delivery_address' => $data['delivery_address'] ?? null,
             ]);
             $saleId = (int) $this->db->lastInsertId();
 

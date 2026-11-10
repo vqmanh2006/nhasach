@@ -29,6 +29,7 @@ unset($_SESSION['flash'], $_SESSION['flash_error']);
                         <th>Khách hàng</th>
                         <th>Người bán</th>
                         <th>Tổng tiền</th>
+                        <th>Địa chỉ giao hàng</th>
                         <th>Trạng thái</th>
                         <th>Ngày tạo</th>
                         <th>Thao tác</th>
@@ -41,6 +42,7 @@ unset($_SESSION['flash'], $_SESSION['flash_error']);
                             <td><?= htmlspecialchars((string) ($sale['customer_name'] ?? 'Khách vãng lai'), ENT_QUOTES, 'UTF-8') ?></td>
                             <td><?= htmlspecialchars((string) ($sale['user_name'] ?? 'N/A'), ENT_QUOTES, 'UTF-8') ?></td>
                             <td><?= number_format((float) $sale['total_amount'], 0, ',', '.') ?>₫</td>
+                            <td><?= htmlspecialchars((string) ($sale['delivery_address'] ?? '-'), ENT_QUOTES, 'UTF-8') ?></td>
                             <td><?= htmlspecialchars((string) $sale['status'], ENT_QUOTES, 'UTF-8') ?></td>
                             <td><?= htmlspecialchars((string) ($sale['created_at'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
                             <td>
@@ -52,7 +54,7 @@ unset($_SESSION['flash'], $_SESSION['flash_error']);
                             </td>
                         </tr>
                     <?php endforeach; ?>
-                    <?php if (!$sales): ?><tr><td colspan="7" class="empty-cell">Chưa có đơn hàng nào.</td></tr><?php endif; ?>
+                    <?php if (!$sales): ?><tr><td colspan="8" class="empty-cell">Chưa có đơn hàng nào.</td></tr><?php endif; ?>
                 </tbody>
             </table>
         </div>

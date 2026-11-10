@@ -1,0 +1,4 @@
+USE `nhasach`;
+
+ALTER TABLE sales
+    ADD COLUMN delivery_address VARCHAR(500) NULL AFTER status;

@@ -14,6 +14,7 @@ JavaScript thuần. Hệ thống hỗ trợ quản lý sách, danh mục, khách
 - Quản lý danh mục sách.
 - Quản lý thông tin khách hàng.
 - Tạo và hủy đơn hàng; tồn kho được cập nhật theo giao dịch.
+- Đặt hàng có địa chỉ giao hàng cụ thể và admin theo dõi được địa chỉ trong đơn.
 - Bảo vệ biểu mẫu bằng CSRF token và sử dụng prepared statements với PDO.
 
 ## Yêu cầu
@@ -124,3 +125,9 @@ khi đăng ký tài khoản đầu tiên. Nếu import lại toàn bộ database
 Nếu tài khoản demo báo sai mật khẩu dù đã nhập `password`, chạy file
 `database/migrations/002_reset_demo_admin_password.sql` trong phpMyAdmin,
 sau đó đăng nhập lại bằng `admin@nhasach.local` / `password`.
+
+Nếu database đã tồn tại từ trước, chạy thêm migration
+`database/migrations/004_add_delivery_address.sql` để bổ sung địa chỉ giao
+hàng cho đơn hàng. Admin/staff có thể mở trang khách hàng bằng liên kết
+**Xem trang khách hàng** trên thanh đầu trang; sách và tồn kho dùng chung
+database nên thay đổi từ trang quản trị sẽ được cập nhật ngay.
