@@ -57,6 +57,61 @@ final class Sale extends Model
         return $this->db->query('SELECT id, title, price, stock_quantity FROM books WHERE is_active = 1 ORDER BY title ASC')->fetchAll();
     }
 
+    public function forUser(int $userId): array
+    {
+        $statement = $this->db->prepare(
+            'SELECT id, total_amount, status, created_at FROM sales WHERE user_id = ? ORDER BY created_at DESC'
+        );
+        $statement->execute([$userId]);
+        return $statement->fetchAll();
+    }
+
+    public function createCustomerOrder(int $userId, array $user, array $cart): int
+    {
+        $customer = $this->db->prepare('SELECT id FROM customers WHERE email = ? LIMIT 1');
+        $customer->execute([(string) $user['email']]);
+        $customerId = (int) ($customer->fetchColumn() ?: 0);
+        if ($customerId === 0) {
+            $insertCustomer = $this->db->prepare(
+                'INSERT INTO customers (name, phone, email, address) VALUES (?, ?, ?, ?)'
+            );
+            $insertCustomer->execute([$user['name'], $user['phone'] ?? null, $user['email'], $user['address'] ?? null]);
+            $customerId = (int) $this->db->lastInsertId();
+        }
+
+        $bookIds = array_map('intval', array_keys($cart));
+        if ($bookIds === []) {
+            throw new InvalidArgumentException('Giỏ hàng đang trống.');
+        }
+        $placeholders = implode(',', array_fill(0, count($bookIds), '?'));
+        $statement = $this->db->prepare(
+            "SELECT id, price, stock_quantity, is_active FROM books WHERE id IN ($placeholders)"
+        );
+        $statement->execute($bookIds);
+        $bookMap = [];
+        foreach ($statement->fetchAll() as $book) {
+            $bookMap[(int) $book['id']] = $book;
+        }
+
+        $items = [];
+        foreach ($cart as $bookId => $quantity) {
+            $bookId = (int) $bookId;
+            $quantity = (int) $quantity;
+            if (!isset($bookMap[$bookId]) || !(int) $bookMap[$bookId]['is_active'] || $quantity < 1 || $quantity > (int) $bookMap[$bookId]['stock_quantity']) {
+                throw new InvalidArgumentException('Một sản phẩm trong giỏ hàng không đủ tồn kho.');
+            }
+            $items[] = ['book_id' => $bookId, 'quantity' => $quantity, 'unit_price' => (float) $bookMap[$bookId]['price']];
+        }
+        $total = array_sum(array_map(static fn (array $item): float => $item['quantity'] * $item['unit_price'], $items));
+        return $this->create([
+            'customer_id' => $customerId,
+            'user_id' => $userId,
+            'total_amount' => $total,
+            'status' => 'completed',
+            'items' => $items,
+        ]);
+    }
+
     public function create(array $data): int
     {
         $this->db->beginTransaction();

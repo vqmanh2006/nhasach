@@ -59,6 +59,8 @@ Hãy đổi hoặc xóa tài khoản mẫu trước khi đưa hệ thống lên 
 | GET/POST | `/login` | Hiển thị và xử lý đăng nhập |
 | GET/POST | `/register` | Tạo tài khoản khách hàng |
 | GET | `/customer` | Trang mua sắm dành cho khách hàng |
+| GET/POST | `/customer/cart` | Xem và cập nhật giỏ hàng |
+| POST | `/customer/order` | Đặt hàng từ giỏ hàng |
 | GET/POST | `/profile` | Xem và cập nhật hồ sơ tài khoản |
 | GET | `/logout` | Đăng xuất |
 | GET | `/books` | Danh sách và tìm kiếm sách |

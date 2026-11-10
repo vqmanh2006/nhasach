@@ -12,6 +12,7 @@ require_once BASE_PATH . '/app/Models/Book.php';
 require_once BASE_PATH . '/app/Controllers/BookController.php';
 require_once BASE_PATH . '/app/Models/User.php';
 require_once BASE_PATH . '/app/Controllers/AuthController.php';
+require_once BASE_PATH . '/app/Controllers/CustomerPortalController.php';
 require_once BASE_PATH . '/app/Models/Category.php';
 require_once BASE_PATH . '/app/Controllers/CategoryController.php';
 require_once BASE_PATH . '/app/Models/Customer.php';
@@ -46,18 +47,12 @@ $router->post('/register', [AuthController::class, 'register']);
 $router->get('/logout', [AuthController::class, 'logout']);
 $router->get('/profile', [AuthController::class, 'profile']);
 $router->post('/profile', [AuthController::class, 'updateProfile']);
-$router->get('/customer', static function (): void {
-    if (empty($_SESSION['user'])) {
-        header('Location: /login');
-        exit;
-    }
-    if (($_SESSION['user']['role'] ?? '') !== 'customer') {
-        header('Location: /');
-        exit;
-    }
-    $books = (new Book())->all(trim((string) ($_GET['search'] ?? '')));
-    require BASE_PATH . '/app/Views/customer/dashboard.php';
-});
+$router->get('/customer', [CustomerPortalController::class, 'index']);
+$router->post('/customer/cart/add', [CustomerPortalController::class, 'addToCart']);
+$router->get('/customer/cart', [CustomerPortalController::class, 'showCart']);
+$router->post('/customer/cart/update', [CustomerPortalController::class, 'updateCart']);
+$router->post('/customer/cart/remove', [CustomerPortalController::class, 'removeFromCart']);
+$router->post('/customer/order', [CustomerPortalController::class, 'checkout']);
 
 $router->get('/books', [BookController::class, 'index']);
 $router->get('/books/create', [BookController::class, 'create']);
