@@ -153,11 +153,14 @@ final class Sale extends Model
                 ]);
 
                 $stockUpdate = $this->db->prepare(
-                    'UPDATE books SET stock_quantity = stock_quantity - :quantity WHERE id = :book_id AND stock_quantity >= :quantity'
+                    'UPDATE books
+                     SET stock_quantity = stock_quantity - :deduct_quantity
+                     WHERE id = :book_id AND stock_quantity >= :required_quantity'
                 );
                 $stockUpdate->execute([
-                    'quantity' => $quantity,
+                    'deduct_quantity' => $quantity,
                     'book_id' => $bookId,
+                    'required_quantity' => $quantity,
                 ]);
 
                 if ($stockUpdate->rowCount() !== 1) {
