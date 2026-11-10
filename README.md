@@ -10,6 +10,7 @@ JavaScript thuần. Hệ thống hỗ trợ quản lý sách, danh mục, khách
 - Giao diện riêng cho khách hàng sau khi đăng nhập.
 - Dashboard hiển thị tổng số sách, danh mục, khách hàng và đơn hàng.
 - Quản lý sách: thêm, sửa, xóa, tìm kiếm, cập nhật giá và tồn kho.
+- Tải ảnh bìa khi thêm hoặc chỉnh sửa sách; hỗ trợ JPG, PNG và WebP tối đa 5MB.
 - Quản lý danh mục sách.
 - Quản lý thông tin khách hàng.
 - Tạo và hủy đơn hàng; tồn kho được cập nhật theo giao dịch.
@@ -92,6 +93,7 @@ config/            # Hằng số ứng dụng và cấu hình database
 core/              # Router, Database, Model, Controller dùng chung
 database/          # Schema và dữ liệu mẫu
 public/            # DocumentRoot, CSS, JavaScript và front controller
+└── uploads/books/  # Ảnh bìa sách do admin tải lên
 ```
 
 ## Luồng xử lý

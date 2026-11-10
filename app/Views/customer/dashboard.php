@@ -50,7 +50,7 @@ unset($_SESSION['flash'], $_SESSION['flash_error']);
             <?php foreach ($books as $book): ?>
                 <?php if (!(int) $book['is_active']) continue; ?>
                 <article class="customer-book-card">
-                    <div class="customer-book-cover">📖</div>
+                    <div class="customer-book-cover"><?php if (!empty($book['cover_image'])): ?><img src="<?= app_url('/' . ltrim((string) $book['cover_image'], '/')) ?>" alt="Ảnh bìa <?= htmlspecialchars((string) $book['title'], ENT_QUOTES, 'UTF-8') ?>"><?php else: ?>📖<?php endif; ?></div>
                     <div class="customer-book-body">
                         <span class="customer-book-category"><?= htmlspecialchars((string) ($book['category_name'] ?? 'Sách hay'), ENT_QUOTES, 'UTF-8') ?></span>
                         <h3><?= htmlspecialchars((string) $book['title'], ENT_QUOTES, 'UTF-8') ?></h3>

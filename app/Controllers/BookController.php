@@ -3,6 +3,13 @@ declare(strict_types=1);
 
 final class BookController extends Controller
 {
+    private const MAX_IMAGE_SIZE = 5242880;
+    private const ALLOWED_IMAGE_TYPES = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+    ];
+
     private Book $books;
 
     public function __construct()
@@ -10,7 +17,40 @@ final class BookController extends Controller
         $this->books = new Book();
     }
 
-    private function input(): array
+    private function uploadCoverImage(?string $currentImage = null): ?string
+    {
+        $file = $_FILES['cover_image'] ?? null;
+        if (!is_array($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            return $currentImage;
+        }
+        if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+            throw new InvalidArgumentException('Không thể tải ảnh bìa lên.');
+        }
+        if ((int) $file['size'] > self::MAX_IMAGE_SIZE) {
+            throw new InvalidArgumentException('Ảnh bìa không được vượt quá 5MB.');
+        }
+
+        $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file((string) $file['tmp_name']);
+        if (!isset(self::ALLOWED_IMAGE_TYPES[$mimeType]) || @getimagesize((string) $file['tmp_name']) === false) {
+            throw new InvalidArgumentException('Ảnh bìa phải là JPG, PNG hoặc WebP.');
+        }
+
+        $uploadDirectory = PUBLIC_PATH . '/uploads/books';
+        if (!is_dir($uploadDirectory) && !mkdir($uploadDirectory, 0755, true) && !is_dir($uploadDirectory)) {
+            throw new RuntimeException('Không thể tạo thư mục lưu ảnh bìa.');
+        }
+        $filename = bin2hex(random_bytes(16)) . '.' . self::ALLOWED_IMAGE_TYPES[$mimeType];
+        if (!move_uploaded_file((string) $file['tmp_name'], $uploadDirectory . '/' . $filename)) {
+            throw new RuntimeException('Không thể lưu ảnh bìa.');
+        }
+
+        if ($currentImage !== null && is_file(PUBLIC_PATH . '/' . ltrim($currentImage, '/'))) {
+            @unlink(PUBLIC_PATH . '/' . ltrim($currentImage, '/'));
+        }
+        return 'uploads/books/' . $filename;
+    }
+
+    private function input(?string $currentImage = null): array
     {
         $title = trim((string) ($_POST['title'] ?? ''));
         $author = trim((string) ($_POST['author'] ?? ''));
@@ -28,6 +68,7 @@ final class BookController extends Controller
             'price' => $price,
             'stock_quantity' => $stock,
             'description' => trim((string) ($_POST['description'] ?? '')) ?: null,
+            'cover_image' => $this->uploadCoverImage($currentImage),
             'is_active' => isset($_POST['is_active']) ? 1 : 0,
         ];
     }
@@ -83,7 +124,8 @@ final class BookController extends Controller
         $this->verifyCsrf();
         $id = (int) ($_POST['id'] ?? 0);
         try {
-            $this->books->update($id, $this->input());
+            $book = $this->books->find($id);
+            $this->books->update($id, $this->input($book['cover_image'] ?? null));
             $_SESSION['flash'] = 'Đã cập nhật sách thành công.';
             $this->redirect('/books');
         } catch (Throwable $exception) {
@@ -98,7 +140,12 @@ final class BookController extends Controller
         $this->requireRole('admin', 'staff');
         $this->verifyCsrf();
         try {
-            $this->books->delete((int) ($_POST['id'] ?? 0));
+            $id = (int) ($_POST['id'] ?? 0);
+            $book = $this->books->find($id);
+            $this->books->delete($id);
+            if (!empty($book['cover_image']) && is_file(PUBLIC_PATH . '/' . ltrim($book['cover_image'], '/'))) {
+                @unlink(PUBLIC_PATH . '/' . ltrim($book['cover_image'], '/'));
+            }
             $_SESSION['flash'] = 'Đã xóa sách thành công.';
         } catch (Throwable $exception) {
             $_SESSION['flash_error'] = 'Không thể xóa sách đã phát sinh trong hóa đơn.';

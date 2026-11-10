@@ -32,8 +32,8 @@ final class Book extends Model
     public function create(array $data): int
     {
         $statement = $this->db->prepare(
-            'INSERT INTO books (category_id, title, isbn, author, publisher, price, stock_quantity, description, is_active)
-             VALUES (:category_id, :title, :isbn, :author, :publisher, :price, :stock_quantity, :description, :is_active)'
+            'INSERT INTO books (category_id, title, isbn, author, publisher, price, stock_quantity, description, cover_image, is_active)
+             VALUES (:category_id, :title, :isbn, :author, :publisher, :price, :stock_quantity, :description, :cover_image, :is_active)'
         );
         $statement->execute($data);
         return (int) $this->db->lastInsertId();
@@ -45,7 +45,7 @@ final class Book extends Model
         $statement = $this->db->prepare(
             'UPDATE books SET category_id = :category_id, title = :title, isbn = :isbn, author = :author,
              publisher = :publisher, price = :price, stock_quantity = :stock_quantity,
-             description = :description, is_active = :is_active WHERE id = :id'
+             description = :description, cover_image = :cover_image, is_active = :is_active WHERE id = :id'
         );
         return $statement->execute($data);
     }
