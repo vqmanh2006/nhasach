@@ -30,10 +30,10 @@ $router->get('/', static function (): void {
     $stats = ['books' => 0, 'categories' => 0, 'customers' => 0, 'sales' => 0];
     try {
         $db = Database::connection();
-        $stats['books'] = (int) $db->query('SELECT COUNT(*) FROM san_pham')->fetchColumn();
-        $stats['categories'] = (int) $db->query('SELECT COUNT(*) FROM danh_muc')->fetchColumn();
-        $stats['customers'] = (int) $db->query('SELECT COUNT(*) FROM khach_hang')->fetchColumn();
-        $stats['sales'] = (int) $db->query('SELECT COUNT(*) FROM don_hang')->fetchColumn();
+        $stats['books'] = (int) $db->query('SELECT COUNT(*) FROM books')->fetchColumn();
+        $stats['categories'] = (int) $db->query('SELECT COUNT(*) FROM categories')->fetchColumn();
+        $stats['customers'] = (int) $db->query('SELECT COUNT(*) FROM customers')->fetchColumn();
+        $stats['sales'] = (int) $db->query('SELECT COUNT(*) FROM sales')->fetchColumn();
     } catch (Throwable $exception) {
         $error = 'Chưa kết nối được cơ sở dữ liệu. Hãy kiểm tra cấu hình trong config/database.php.';
     }
@@ -53,6 +53,7 @@ $router->post('/customer/cart/add', [CustomerPortalController::class, 'addToCart
 $router->get('/customer/cart', [CustomerPortalController::class, 'showCart']);
 $router->post('/customer/cart/update', [CustomerPortalController::class, 'updateCart']);
 $router->post('/customer/cart/remove', [CustomerPortalController::class, 'removeFromCart']);
+$router->get('/customer/checkout', [CustomerPortalController::class, 'showCheckout']);
 $router->post('/customer/order', [CustomerPortalController::class, 'checkout']);
 
 $router->get('/books', [BookController::class, 'index']);

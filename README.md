@@ -111,19 +111,23 @@ trên tiêu đề trang và footer tại hằng `APP_NAME` trong
 `config/constants.php`; thương hiệu trên thanh điều hướng nằm trong
 `app/Views/layouts/header.php`.
 
-## Cơ sở dữ liệu tiếng Việt
+## Đăng ký tài khoản khách hàng
 
-File `database/nhasach.sql` hiện sử dụng tên bảng và cột tiếng Việt theo
-database mới: `nhan_vien`, `khach_hang`, `danh_muc`, `san_pham`,
-`don_hang` và `chi_tiet_don_hang`. File cũng có tài khoản quản trị mẫu,
-danh mục và sách mẫu.
+Mở `http://localhost:8080/register` để tạo tài khoản khách hàng, hoặc chọn
+liên kết đăng ký trên trang `/login`. Tài khoản mới được lưu với role
+`customer` và được đăng nhập tự động sau khi đăng ký thành công.
 
-Khi chuyển từ database cũ, hãy sao lưu dữ liệu rồi tạo database mới bằng
-cách import lại toàn bộ file `database/nhasach.sql`; không chạy các migration
-cũ trên schema mới vì chúng tham chiếu các bảng tiếng Anh.
+Nếu database đã được tạo từ phiên bản cũ, chạy thêm file
+`database/migrations/001_add_customer_accounts.sql` trong phpMyAdmin trước
+khi đăng ký tài khoản đầu tiên. Nếu import lại toàn bộ database từ đầu, file
+`database/nhasach.sql` đã bao gồm các cột và role cần thiết.
 
-Mở `/register` để tạo tài khoản khách hàng. Tài khoản nhân viên và quản trị
-được lưu trong `nhan_vien`, còn tài khoản khách hàng được lưu trong
-`khach_hang`. Admin/staff vẫn có thể mở trang khách hàng bằng liên kết
-**Xem trang khách hàng**; sách, tồn kho và đơn hàng dùng schema tiếng Việt
-chung.
+Nếu tài khoản demo báo sai mật khẩu dù đã nhập `password`, chạy file
+`database/migrations/002_reset_demo_admin_password.sql` trong phpMyAdmin,
+sau đó đăng nhập lại bằng `admin@nhasach.local` / `password`.
+
+Nếu database đã tồn tại từ trước, chạy thêm migration
+`database/migrations/004_add_delivery_address.sql` để bổ sung địa chỉ giao
+hàng cho đơn hàng. Admin/staff có thể mở trang khách hàng bằng liên kết
+**Xem trang khách hàng** trên thanh đầu trang; sách và tồn kho dùng chung
+database nên thay đổi từ trang quản trị sẽ được cập nhật ngay.

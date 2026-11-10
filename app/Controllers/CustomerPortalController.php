@@ -120,17 +120,41 @@ final class CustomerPortalController extends Controller
         $this->redirect('/customer/cart');
     }
 
+    public function showCheckout(): void
+    {
+        $this->requireCustomer();
+        $items = $this->cartItems();
+        if (!$items) {
+            $_SESSION['flash_error'] = 'Giỏ hàng đang trống.';
+            $this->redirect('/customer/cart');
+        }
+        $this->view('customer/checkout', [
+            'items' => $items,
+            'total' => array_sum(array_map(static fn (array $item): float => (float) $item['subtotal'], $items)),
+            'user' => $_SESSION['user'],
+            'csrfToken' => $this->csrfToken(),
+        ]);
+    }
+
     public function checkout(): void
     {
         $this->requireCustomer();
         $this->verifyCsrf();
+        $name = trim((string) ($_POST['name'] ?? ''));
+        $phone = trim((string) ($_POST['phone'] ?? ''));
         $deliveryAddress = trim((string) ($_POST['delivery_address'] ?? ''));
-        if ($deliveryAddress === '') {
-            $_SESSION['flash_error'] = 'Vui lòng nhập địa chỉ giao hàng cụ thể.';
-            $this->redirect('/customer/cart');
+        if ($name === '' || $phone === '' || $deliveryAddress === '') {
+            $_SESSION['flash_error'] = 'Vui lòng nhập đầy đủ họ tên, số điện thoại và địa chỉ giao hàng.';
+            $this->redirect('/customer/checkout');
         }
         try {
-            $this->sales->createCustomerOrder((int) $_SESSION['user']['id'], $_SESSION['user'], $this->cart(), $deliveryAddress);
+            $user = array_merge($_SESSION['user'], [
+                'name' => $name,
+                'phone' => $phone,
+                'address' => $deliveryAddress,
+            ]);
+            $this->sales->createCustomerOrder((int) $_SESSION['user']['id'], $user, $this->cart(), $deliveryAddress);
+            $_SESSION['user'] = $user;
             $_SESSION['cart'] = [];
             $_SESSION['flash'] = 'Đặt hàng thành công. Cảm ơn bạn đã mua sách.';
         } catch (Throwable $exception) {
@@ -139,5 +163,21 @@ final class CustomerPortalController extends Controller
                 : 'Không thể đặt hàng lúc này. Vui lòng kiểm tra lại tồn kho.';
         }
         $this->redirect('/customer');
+    }
+
+    private function cartItems(): array
+    {
+        $items = [];
+        foreach ($this->cart() as $id => $quantity) {
+            $book = $this->books->find((int) $id);
+            if (!$book || !(int) $book['is_active'] || (int) $book['stock_quantity'] < 1) {
+                continue;
+            }
+            $quantity = min(max(1, (int) $quantity), (int) $book['stock_quantity']);
+            $book['quantity'] = $quantity;
+            $book['subtotal'] = $quantity * (float) $book['price'];
+            $items[] = $book;
+        }
+        return $items;
     }
 }

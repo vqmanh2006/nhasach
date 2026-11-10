@@ -5,15 +5,13 @@ final class Customer extends Model
 {
     public function all(string $search = ''): array
     {
-        $sql = 'SELECT id_khach_hang AS id, ho_ten AS name, so_dien_thoai AS phone,
-                       dia_chi_email AS email, dia_chi AS address, NULL AS notes, ngay_tao AS created_at
-                FROM khach_hang';
+        $sql = 'SELECT * FROM customers';
         $params = [];
         if ($search !== '') {
-            $sql .= ' WHERE ho_ten LIKE :search OR so_dien_thoai LIKE :search OR dia_chi_email LIKE :search';
+            $sql .= ' WHERE name LIKE :search OR phone LIKE :search OR email LIKE :search OR address LIKE :search OR notes LIKE :search';
             $params['search'] = '%' . $search . '%';
         }
-        $sql .= ' ORDER BY ngay_tao DESC';
+        $sql .= ' ORDER BY created_at DESC';
         $statement = $this->db->prepare($sql);
         $statement->execute($params);
         return $statement->fetchAll();
@@ -21,26 +19,33 @@ final class Customer extends Model
 
     public function find(int $id): ?array
     {
-        $statement = $this->db->prepare('SELECT id_khach_hang AS id, ho_ten AS name, so_dien_thoai AS phone, dia_chi_email AS email, dia_chi AS address, NULL AS notes FROM khach_hang WHERE id_khach_hang = ? LIMIT 1');
+        $statement = $this->db->prepare('SELECT * FROM customers WHERE id = ? LIMIT 1');
         $statement->execute([$id]);
         return $statement->fetch() ?: null;
     }
 
     public function create(array $data): int
     {
-        $statement = $this->db->prepare('INSERT INTO khach_hang (ho_ten, so_dien_thoai, dia_chi_email, dia_chi, dang_hoat_dong) VALUES (:name, :phone, :email, :address, 1)');
-        $statement->execute(['name' => $data['name'], 'phone' => $data['phone'], 'email' => $data['email'], 'address' => $data['address']]);
+        $statement = $this->db->prepare(
+            'INSERT INTO customers (name, phone, email, address, notes)
+             VALUES (:name, :phone, :email, :address, :notes)'
+        );
+        $statement->execute($data);
         return (int) $this->db->lastInsertId();
     }
 
     public function update(int $id, array $data): bool
     {
-        return $this->db->prepare('UPDATE khach_hang SET ho_ten = :name, so_dien_thoai = :phone, dia_chi_email = :email, dia_chi = :address WHERE id_khach_hang = :id')
-            ->execute(['id' => $id, 'name' => $data['name'], 'phone' => $data['phone'], 'email' => $data['email'], 'address' => $data['address']]);
+        $data['id'] = $id;
+        $statement = $this->db->prepare(
+            'UPDATE customers SET name = :name, phone = :phone, email = :email, address = :address, notes = :notes WHERE id = :id'
+        );
+        return $statement->execute($data);
     }
 
     public function delete(int $id): bool
     {
-        return $this->db->prepare('DELETE FROM khach_hang WHERE id_khach_hang = ?')->execute([$id]);
+        $statement = $this->db->prepare('DELETE FROM customers WHERE id = ?');
+        return $statement->execute([$id]);
     }
 }
