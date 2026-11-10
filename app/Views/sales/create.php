@@ -9,7 +9,7 @@ require BASE_PATH . '/app/Views/layouts/sidebar.php';
             <h1>Tạo đơn hàng</h1>
             <p class="muted">Nhập thông tin khách hàng và sản phẩm bán ra.</p>
         </div>
-        <a href="/sales">← Danh sách đơn hàng</a>
+        <a href="<?= app_url("/") ?>sales">← Danh sách đơn hàng</a>
     </div>
     <?php if (!empty($error)): ?><div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
     <?php require BASE_PATH . '/app/Views/sales/_form.php'; ?>

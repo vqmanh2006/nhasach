@@ -24,7 +24,8 @@ JavaScript thuần. Hệ thống hỗ trợ quản lý sách, danh mục, khách
 
 ## Cài đặt
 
-1. Clone dự án và trỏ DocumentRoot của Apache vào thư mục `public/`.
+1. Clone dự án và trỏ DocumentRoot của Apache vào thư mục `public/`, hoặc
+   mở dự án tại `http://localhost/nhasach/public/` khi đặt trong XAMPP.
 2. Tạo cơ sở dữ liệu bằng file `database/nhasach.sql`:
 
    ```bash

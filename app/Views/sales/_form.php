@@ -1,4 +1,4 @@
-<?php $editing = false; ?><form method="post" action="/sales" class="content-card form-grid">
+<?php $editing = false; ?><form method="post" action="<?= app_url("/") ?>sales" class="content-card form-grid">
     <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
     <div class="form-columns">
         <label>Khách hàng *
@@ -46,6 +46,6 @@
 
     <div>
         <button class="btn btn-primary" type="submit">Tạo đơn hàng</button>
-        <a class="btn btn-light" href="/sales">Hủy</a>
+        <a class="btn btn-light" href="<?= app_url("/") ?>sales">Hủy</a>
     </div>
 </form>

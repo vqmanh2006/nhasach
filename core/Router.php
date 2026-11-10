@@ -18,6 +18,10 @@ final class Router
     public function dispatch(string $method, string $path): void
     {
         $path = rtrim(parse_url($path, PHP_URL_PATH) ?: '/', '/') ?: '/';
+        $baseUrl = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+        if ($baseUrl !== '' && $baseUrl !== '/' && str_starts_with($path, $baseUrl)) {
+            $path = substr($path, strlen($baseUrl)) ?: '/';
+        }
         $handler = $this->routes[$method][$path] ?? null;
         if (!$handler) {
             http_response_code(404);

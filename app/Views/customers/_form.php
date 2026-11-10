@@ -10,6 +10,6 @@
     </div>
     <div>
         <button class="btn btn-primary" type="submit"><?= $editing ? 'Lưu thay đổi' : 'Thêm khách hàng' ?></button>
-        <a class="btn btn-light" href="/customers">Hủy</a>
+        <a class="btn btn-light" href="<?= app_url("/") ?>customers">Hủy</a>
     </div>
 </form>

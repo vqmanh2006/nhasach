@@ -12,12 +12,12 @@ unset($_SESSION['flash'], $_SESSION['flash_error']);
             <h1>Quản lý bán hàng</h1>
             <p class="muted">Theo dõi đơn hàng và doanh thu của cửa hàng.</p>
         </div>
-        <a class="btn btn-primary" href="/sales/create">+ Tạo đơn hàng</a>
+        <a class="btn btn-primary" href="<?= app_url("/") ?>sales/create">+ Tạo đơn hàng</a>
     </div>
     <?php if ($flash): ?><div class="alert alert-success"><?= htmlspecialchars($flash, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
     <?php if ($errorFlash): ?><div class="alert alert-danger"><?= htmlspecialchars($errorFlash, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
     <section class="content-card">
-        <form class="search-bar" method="get" action="/sales">
+        <form class="search-bar" method="get" action="<?= app_url("/") ?>sales">
             <input type="search" name="search" value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>" placeholder="Tìm theo khách hàng hoặc trạng thái...">
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
         </form>
@@ -44,7 +44,7 @@ unset($_SESSION['flash'], $_SESSION['flash_error']);
                             <td><?= htmlspecialchars((string) $sale['status'], ENT_QUOTES, 'UTF-8') ?></td>
                             <td><?= htmlspecialchars((string) ($sale['created_at'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
                             <td>
-                                <form method="post" action="/sales/delete" onsubmit="return confirm('Bạn có chắc muốn xóa đơn hàng này?');">
+                                <form method="post" action="<?= app_url("/") ?>sales/delete" onsubmit="return confirm('Bạn có chắc muốn xóa đơn hàng này?');">
                                     <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
                                     <input type="hidden" name="id" value="<?= (int) $sale['id'] ?>">
                                     <button class="btn btn-danger" type="submit">Hủy</button>

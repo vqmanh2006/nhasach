@@ -7,7 +7,7 @@ $title = 'Đăng ký';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?> - <?= APP_NAME ?></title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="<?= app_url("/") ?>css/style.css">
 </head>
 <body class="auth-page">
 <main class="auth-card">
@@ -17,7 +17,7 @@ $title = 'Đăng ký';
     <?php if (!empty($error)): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
     <?php endif; ?>
-    <form method="post" action="/register" class="form-grid">
+    <form method="post" action="<?= app_url("/") ?>register" class="form-grid">
         <label>Họ và tên<input type="text" name="name" value="<?= htmlspecialchars((string) ($_POST['name'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" required autofocus></label>
         <label>Email<input type="email" name="email" value="<?= htmlspecialchars((string) ($_POST['email'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" required></label>
         <label>Số điện thoại<input type="text" name="phone" value="<?= htmlspecialchars((string) ($_POST['phone'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"></label>
@@ -26,7 +26,7 @@ $title = 'Đăng ký';
         <label>Xác nhận mật khẩu<input type="password" name="confirm_password" required minlength="6"></label>
         <button class="btn btn-primary" type="submit">Đăng ký</button>
     </form>
-    <p class="demo-note">Đã có tài khoản? <a href="/login">Đăng nhập</a></p>
+    <p class="demo-note">Đã có tài khoản? <a href="<?= app_url("/") ?>login">Đăng nhập</a></p>
 </main>
 </body>
 </html>

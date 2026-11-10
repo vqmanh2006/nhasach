@@ -23,7 +23,7 @@ require BASE_PATH . '/app/Views/layouts/sidebar.php';
     <?php endif; ?>
 
     <section class="content-card">
-        <form method="post" action="/profile" class="form-grid">
+        <form method="post" action="<?= app_url("/") ?>profile" class="form-grid">
             <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
             <label>Họ và tên<input type="text" name="name" value="<?= htmlspecialchars((string) ($user['name'] ?? $userSession['name'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" required></label>
             <label>Email<input type="email" value="<?= htmlspecialchars((string) ($user['email'] ?? $userSession['email'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" disabled></label>

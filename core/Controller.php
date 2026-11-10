@@ -11,7 +11,7 @@ abstract class Controller
 
     protected function redirect(string $path): never
     {
-        header('Location: ' . $path);
+        header('Location: ' . app_url($path));
         exit;
     }
 

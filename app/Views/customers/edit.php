@@ -10,7 +10,7 @@ require BASE_PATH . '/app/Views/layouts/sidebar.php';
             <h1>Sửa khách hàng</h1>
             <p class="muted">Cập nhật thông tin khách hàng.</p>
         </div>
-        <a href="/customers">← Danh sách khách hàng</a>
+        <a href="<?= app_url("/") ?>customers">← Danh sách khách hàng</a>
     </div>
     <?php if (!empty($error)): ?><div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
     <?php require BASE_PATH . '/app/Views/customers/_form.php'; ?>
