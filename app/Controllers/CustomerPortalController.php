@@ -5,11 +5,13 @@ final class CustomerPortalController extends Controller
 {
     private Book $books;
     private Sale $sales;
+    private Category $categories;
 
     public function __construct()
     {
         $this->books = new Book();
         $this->sales = new Sale();
+        $this->categories = new Category();
     }
 
     private function requireCustomer(): void
@@ -25,8 +27,30 @@ final class CustomerPortalController extends Controller
     public function index(): void
     {
         $this->requireCustomer();
+        $categoryId = isset($_GET['category_id']) && $_GET['category_id'] !== ''
+            ? (int) $_GET['category_id']
+            : null;
+        $this->renderStorefront($categoryId);
+    }
+
+    public function category(): void
+    {
+        $this->requireCustomer();
+        $categoryId = (int) ($_GET['id'] ?? 0);
+        if (!$this->categories->find($categoryId)) {
+            $_SESSION['flash_error'] = 'Thể loại sách không tồn tại.';
+            $this->redirect('/customer');
+        }
+        $this->renderStorefront($categoryId);
+    }
+
+    private function renderStorefront(?int $categoryId = null): void
+    {
         $this->view('customer/dashboard', [
-            'books' => $this->books->all(trim((string) ($_GET['search'] ?? ''))),
+            'books' => $this->books->all(trim((string) ($_GET['search'] ?? '')), $categoryId),
+            'categories' => $this->categories->all(),
+            'selectedCategory' => $categoryId !== null ? $this->categories->find($categoryId) : null,
+            'categoryId' => $categoryId,
             'search' => trim((string) ($_GET['search'] ?? '')),
             'orders' => $this->sales->forUser((int) $_SESSION['user']['id']),
             'csrfToken' => $this->csrfToken(),

@@ -3,13 +3,21 @@ declare(strict_types=1);
 
 final class Book extends Model
 {
-    public function all(string $search = ''): array
+    public function all(string $search = '', ?int $categoryId = null): array
     {
         $sql = 'SELECT b.*, c.name AS category_name FROM books b LEFT JOIN categories c ON c.id = b.category_id';
         $params = [];
+        $conditions = [];
         if ($search !== '') {
-            $sql .= ' WHERE b.title LIKE :search OR b.isbn LIKE :search OR b.author LIKE :search';
+            $conditions[] = '(b.title LIKE :search OR b.isbn LIKE :search OR b.author LIKE :search)';
             $params['search'] = '%' . $search . '%';
+        }
+        if ($categoryId !== null) {
+            $conditions[] = 'b.category_id = :category_id';
+            $params['category_id'] = $categoryId;
+        }
+        if ($conditions) {
+            $sql .= ' WHERE ' . implode(' AND ', $conditions);
         }
         $sql .= ' ORDER BY b.created_at DESC';
         $statement = $this->db->prepare($sql);

@@ -2,6 +2,8 @@
 $title = 'Trang khách hàng';
 $user = $_SESSION['user'];
 $search = trim((string) ($_GET['search'] ?? ''));
+$categories = $categories ?? [];
+$selectedCategory = $selectedCategory ?? null;
 $flash = $_SESSION['flash'] ?? null;
 $flashError = $_SESSION['flash_error'] ?? null;
 unset($_SESSION['flash'], $_SESSION['flash_error']);
@@ -36,12 +38,21 @@ unset($_SESSION['flash'], $_SESSION['flash_error']);
         <span class="customer-hero-icon">📚</span>
     </section>
     <section class="customer-section">
+        <div class="customer-category-nav">
+            <a class="<?= !$selectedCategory ? 'active' : '' ?>" href="<?= app_url('/') ?>customer">Tất cả sách</a>
+            <?php foreach ($categories as $category): ?>
+                <a class="<?= $selectedCategory && (int) $selectedCategory['id'] === (int) $category['id'] ? 'active' : '' ?>" href="<?= app_url('/') ?>customer/category?id=<?= (int) $category['id'] ?>">
+                    <?= htmlspecialchars((string) $category['name'], ENT_QUOTES, 'UTF-8') ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
         <div class="customer-section-heading">
             <div>
-                <h2>Sách đang có tại nhà sách</h2>
+                <h2><?= $selectedCategory ? 'Sách thuộc thể loại ' . htmlspecialchars((string) $selectedCategory['name'], ENT_QUOTES, 'UTF-8') : 'Tất cả sách đang có tại nhà sách' ?></h2>
                 <p class="muted">Tìm kiếm theo tên sách, tác giả hoặc ISBN.</p>
             </div>
-            <form class="customer-search" method="get" action="<?= app_url("/") ?>customer">
+            <form class="customer-search" method="get" action="<?= app_url("/") ?><?= $selectedCategory ? 'customer/category' : 'customer' ?>">
+                <?php if ($selectedCategory): ?><input type="hidden" name="id" value="<?= (int) $selectedCategory['id'] ?>"><?php endif; ?>
                 <input type="search" name="search" value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>" placeholder="Tìm sách...">
                 <button class="btn btn-primary" type="submit">Tìm kiếm</button>
             </form>
