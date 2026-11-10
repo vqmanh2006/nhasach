@@ -35,7 +35,8 @@ JavaScript thuần. Hệ thống hỗ trợ quản lý sách, danh mục, khách
    trường `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` và `DB_PASSWORD`.
 4. Đảm bảo web server có quyền đọc toàn bộ mã nguồn và truy cập thư mục
    `public/`.
-5. Mở `/login` trên trình duyệt.
+5. Mở `/` trên trình duyệt. Đây là link truy cập chính; hệ thống sẽ tự
+   hiển thị giao diện quản trị hoặc khách hàng theo tài khoản đăng nhập.
 
 Không cần cài package bên ngoài; frontend sử dụng CSS và JavaScript có sẵn
 trong thư mục `public/`.
@@ -58,7 +59,7 @@ Hãy đổi hoặc xóa tài khoản mẫu trước khi đưa hệ thống lên 
 | GET | `/` | Dashboard thống kê |
 | GET/POST | `/login` | Hiển thị và xử lý đăng nhập |
 | GET/POST | `/register` | Tạo tài khoản khách hàng |
-| GET | `/customer` | Trang mua sắm dành cho khách hàng |
+| GET | `/customer` | Route nội bộ cho trang mua sắm khách hàng |
 | GET/POST | `/customer/cart` | Xem và cập nhật giỏ hàng |
 | POST | `/customer/order` | Đặt hàng từ giỏ hàng |
 | GET/POST | `/profile` | Xem và cập nhật hồ sơ tài khoản |

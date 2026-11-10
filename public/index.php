@@ -24,8 +24,8 @@ $router = new Router();
 
 $router->get('/', static function (): void {
     if (($_SESSION['user']['role'] ?? '') === 'customer') {
-        header('Location: /customer');
-        exit;
+        (new CustomerPortalController())->index();
+        return;
     }
     $stats = ['books' => 0, 'categories' => 0, 'customers' => 0, 'sales' => 0];
     try {
