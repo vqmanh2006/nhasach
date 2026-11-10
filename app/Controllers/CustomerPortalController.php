@@ -44,6 +44,20 @@ final class CustomerPortalController extends Controller
         $this->renderStorefront($categoryId);
     }
 
+    public function showBook(): void
+    {
+        $this->requireCustomer();
+        $book = $this->books->find((int) ($_GET['id'] ?? 0));
+        if (!$book || !(int) $book['is_active']) {
+            $_SESSION['flash_error'] = 'Sách không tồn tại hoặc đã ngừng bán.';
+            $this->redirect('/customer');
+        }
+        $this->view('customer/book', [
+            'book' => $book,
+            'csrfToken' => $this->csrfToken(),
+        ]);
+    }
+
     private function renderStorefront(?int $categoryId = null): void
     {
         $this->view('customer/dashboard', [
@@ -143,7 +157,8 @@ final class CustomerPortalController extends Controller
         $name = trim((string) ($_POST['name'] ?? ''));
         $phone = trim((string) ($_POST['phone'] ?? ''));
         $deliveryAddress = trim((string) ($_POST['delivery_address'] ?? ''));
-        if ($name === '' || $phone === '' || $deliveryAddress === '') {
+        $paymentMethod = (string) ($_POST['payment_method'] ?? 'offline');
+        if ($name === '' || $phone === '' || $deliveryAddress === '' || !in_array($paymentMethod, ['offline', 'online'], true)) {
             $_SESSION['flash_error'] = 'Vui lòng nhập đầy đủ họ tên, số điện thoại và địa chỉ giao hàng.';
             $this->redirect('/customer/checkout');
         }
@@ -153,7 +168,7 @@ final class CustomerPortalController extends Controller
                 'phone' => $phone,
                 'address' => $deliveryAddress,
             ]);
-            $this->sales->createCustomerOrder((int) $_SESSION['user']['id'], $user, $this->cart(), $deliveryAddress);
+            $this->sales->createCustomerOrder((int) $_SESSION['user']['id'], $user, $this->cart(), $deliveryAddress, $paymentMethod);
             $_SESSION['user'] = $user;
             $_SESSION['cart'] = [];
             $_SESSION['flash'] = 'Đặt hàng thành công. Cảm ơn bạn đã mua sách.';

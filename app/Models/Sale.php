@@ -66,7 +66,7 @@ final class Sale extends Model
         return $statement->fetchAll();
     }
 
-    public function createCustomerOrder(int $userId, array $user, array $cart, string $deliveryAddress): int
+    public function createCustomerOrder(int $userId, array $user, array $cart, string $deliveryAddress, string $paymentMethod = 'offline'): int
     {
         $customer = $this->db->prepare('SELECT id FROM customers WHERE email = ? LIMIT 1');
         $customer->execute([(string) $user['email']]);
@@ -112,6 +112,7 @@ final class Sale extends Model
             'total_amount' => $total,
             'status' => 'completed',
             'delivery_address' => $deliveryAddress,
+            'payment_method' => $paymentMethod,
             'items' => $items,
         ]);
     }
@@ -121,8 +122,8 @@ final class Sale extends Model
         $this->db->beginTransaction();
         try {
             $sale = $this->db->prepare(
-                'INSERT INTO sales (customer_id, user_id, total_amount, status, delivery_address)
-                 VALUES (:customer_id, :user_id, :total_amount, :status, :delivery_address)'
+                'INSERT INTO sales (customer_id, user_id, total_amount, status, delivery_address, payment_method)
+                 VALUES (:customer_id, :user_id, :total_amount, :status, :delivery_address, :payment_method)'
             );
             $sale->execute([
                 'customer_id' => $data['customer_id'],
@@ -130,6 +131,7 @@ final class Sale extends Model
                 'total_amount' => $data['total_amount'],
                 'status' => $data['status'],
                 'delivery_address' => $data['delivery_address'] ?? null,
+                'payment_method' => $data['payment_method'] ?? 'offline',
             ]);
             $saleId = (int) $this->db->lastInsertId();
 

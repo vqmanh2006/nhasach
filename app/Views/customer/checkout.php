@@ -39,6 +39,26 @@ $user = $user ?? $_SESSION['user'];
                 <label>Địa chỉ giao hàng cụ thể
                     <textarea name="delivery_address" rows="4" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" required><?= htmlspecialchars((string) ($user['address'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea>
                 </label>
+                <fieldset class="payment-options">
+                    <legend>Phương thức thanh toán</legend>
+                    <label class="payment-option">
+                        <input type="radio" name="payment_method" value="offline" checked>
+                        <span><strong>Thanh toán khi nhận hàng</strong><small>Thanh toán tiền mặt khi nhận sách.</small></span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment_method" value="online">
+                        <span><strong>Thanh toán online</strong><small>Quét mã QR mẫu để thanh toán.</small></span>
+                    </label>
+                </fieldset>
+                <div class="sample-qr" id="sample-qr" hidden>
+                    <div class="sample-qr-code" aria-label="Mã QR thanh toán mẫu">
+                        <?php for ($row = 0; $row < 9; $row++): for ($col = 0; $col < 9; $col++): ?>
+                            <?php $dark = (($row * 7 + $col * 11 + $row * $col) % 3 !== 1) || (($row < 3 || $row > 5) && ($col < 3 || $col > 5)); ?>
+                            <i class="<?= $dark ? 'dark' : '' ?>"></i>
+                        <?php endfor; endfor; ?>
+                    </div>
+                    <p><strong>QR mẫu</strong><br>Đây là mã minh họa, chưa kết nối ngân hàng thật.</p>
+                </div>
                 <button class="btn btn-primary" type="submit">Xác nhận đặt hàng</button>
             </form>
         </div>
@@ -56,4 +76,13 @@ $user = $user ?? $_SESSION['user'];
 </main>
 <footer class="customer-footer">© <?= date('Y') ?> <?= APP_NAME ?></footer>
 </body>
+<script>
+    const paymentOptions = document.querySelectorAll('input[name="payment_method"]');
+    const sampleQr = document.getElementById('sample-qr');
+    function toggleSampleQr() {
+        sampleQr.hidden = document.querySelector('input[name="payment_method"]:checked')?.value !== 'online';
+    }
+    paymentOptions.forEach((option) => option.addEventListener('change', toggleSampleQr));
+    toggleSampleQr();
+</script>
 </html>

@@ -131,3 +131,8 @@ Nếu database đã tồn tại từ trước, chạy thêm migration
 hàng cho đơn hàng. Admin/staff có thể mở trang khách hàng bằng liên kết
 **Xem trang khách hàng** trên thanh đầu trang; sách và tồn kho dùng chung
 database nên thay đổi từ trang quản trị sẽ được cập nhật ngay.
+
+Để bật lựa chọn thanh toán khi đặt hàng trên database cũ, chạy thêm
+`database/migrations/005_add_payment_method.sql`. Trang chi tiết sách dùng
+route `/customer/book?id=...`; phương thức online hiện hiển thị QR mẫu để
+kiểm thử giao diện, chưa kết nối ngân hàng thật.

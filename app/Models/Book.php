@@ -27,7 +27,11 @@ final class Book extends Model
 
     public function find(int $id): ?array
     {
-        $statement = $this->db->prepare('SELECT * FROM books WHERE id = ? LIMIT 1');
+        $statement = $this->db->prepare(
+            'SELECT b.*, c.name AS category_name
+             FROM books b LEFT JOIN categories c ON c.id = b.category_id
+             WHERE b.id = ? LIMIT 1'
+        );
         $statement->execute([$id]);
         return $statement->fetch() ?: null;
     }

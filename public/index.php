@@ -49,6 +49,7 @@ $router->get('/profile', [AuthController::class, 'profile']);
 $router->post('/profile', [AuthController::class, 'updateProfile']);
 $router->get('/customer', [CustomerPortalController::class, 'index']);
 $router->get('/customer/category', [CustomerPortalController::class, 'category']);
+$router->get('/customer/book', [CustomerPortalController::class, 'showBook']);
 $router->post('/customer/cart/add', [CustomerPortalController::class, 'addToCart']);
 $router->get('/customer/cart', [CustomerPortalController::class, 'showCart']);
 $router->post('/customer/cart/update', [CustomerPortalController::class, 'updateCart']);
